@@ -72,7 +72,12 @@ def add_sp_percentage(df_players, df_savant):
     sp_percentage = (sp_count / total_count) * 100
 
     df_players = df_players.merge(sp_percentage.rename('sp_pct'), left_on='player_mlb_id', right_index=True, how='left')
-    
+
+    #categorize pitchers
+    df_players['starter'] = (df_players['sp_pct'] > 75).astype(int)
+    df_players['reliever'] = (df_players['sp_pct'] < 25).astype(int)
+    df_players['both_starter_reliever'] = ((df_players['sp_pct'] > 25) & (df_players['sp_pct'] < 75)).astype(int)
+                                                                       
     return df_players
 
 #average how many batters a picther faced in an outing
@@ -210,9 +215,6 @@ def calculate_batting_stats(df_players, df_savant):
                                                                                                                 
     # On-Base Plus Slugging (OPS)
     df_players['ops'] = df_players['obp'] + df_players['slg']
-    
-    # Weighted On-Base Average (wOBA) - simplified
-    #Is a column in dataframe with wOBA
 
     #calculate type of hit rates
     df_players = hit_ball_type_rates(df_players, df_savant,'batter')
@@ -430,6 +432,19 @@ def hit_ball_type_rates(df_players, df_savant, player_type):
     df_players[f'gb_fb_ratio_{player_type}'] = df_players[f'{player_type}_ground_ball'] / df_players[f'{player_type}_fly_ball']    
     df_players[f'hr_fb_pct_{player_type}'] = df_players[f'{player_type}_home_run'] / df_players[f'{player_type}_fly_ball']
     
+    return df_players
+
+#calculate a player's expected woba on a season
+def calculate_average_xwoba(df_players,df_savant,player_type):
+    df_savant_xwoba = df_savant[df_savant['estimated_woba_using_speedangle'].notna()]
+    df_savant_avg = df_savant_xwoba.groupby([player_type,'year'])['estimated_woba_using_speedangle'].mean().reset_index(name=f'{player_type}_avg_xwoba')
+    df_players = df_players.merge(df_savant_avg, how='left', left_on=['player_mlb_id', 'year'], right_on=[player_type, 'year']).drop(columns=player_type)
+    return df_players
+
+def calculate_woba(df_players, df_savant, player_type):
+    df_woba = df_savant[df_savant['woba_denom'] == 1]
+    df_woba_avg = df_woba.groupby([player_type,'year'])['woba_value'].mean().reset_index(name=f'{player_type}_avg_woba')
+    df_players = df_players.merge(df_woba_avg, how='left', left_on=['player_mlb_id', 'year'], right_on=[player_type, 'year']).drop(columns=player_type)
     return df_players
 
 #calculate a player's primary position
