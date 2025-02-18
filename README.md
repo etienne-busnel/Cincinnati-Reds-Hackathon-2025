@@ -2,6 +2,7 @@
 
 By: Etienne Busnel, Nick McNulty, Naman Lakhani, Kenzo Valentin, and Andrew Pollack
 
+READ WITH BETTER VISUALS HERE: https://fordhamsas.wixsite.com/website/post/forecasting-mlb-playing-time-cincinnati-reds-2025-hackathon
 
 Introduction
 Imagine offering a baseball fan the chance to build a starting rotation featuring Shohei Ohtani, Tyler Glasnow, Clayton Kershaw, Tony Gonsolin, and Dustin May. Most would jump at the opportunity—after all, this collection of talent includes Cy Young winners, solid backend options, and two-way superstars. And yet, despite assembling this dream rotation, the 2024 Los Angeles Dodgers found themselves in a nightmare scenario: every single one of these pitchers landed on the injured list.
